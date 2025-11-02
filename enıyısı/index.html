@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Clone</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/auth.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="auth-modal">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h2>Discord'a Hoş Geldiniz!</h2>
+                <p>Devam etmek için giriş yapın veya kayıt olun</p>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form active">
+                <div class="form-group">
+                    <label for="login-email">E-posta</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Şifre</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="auth-btn">Giriş Yap</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" class="auth-form hidden">
+                <div class="form-group">
+                    <label for="register-username">Kullanıcı Adı</label>
+                    <input type="text" id="register-username" required>
+                    <small>Bu isim diğer kullanıcılar tarafından görülecek</small>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">E-posta</label>
+                    <input type="email" id="register-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Şifre</label>
+                    <input type="password" id="register-password" required>
+                    <small>Şifreniz en az 6 karakter olmalıdır</small>
+                </div>
+                <button type="submit" class="auth-btn">Kayıt Ol</button>
+            </form>
+            
+            <div class="auth-footer">
+                <p id="login-footer">Hesabınız yok mu? <a href="#" id="show-register">Kayıt Ol</a></p>
+                <p id="register-footer" class="hidden">Zaten hesabınız var mı? <a href="#" id="show-login">Giriş Yap</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="app-container hidden">
+        <!-- Servers & Friends Sidebar -->
+        <div class="servers-sidebar">
+            <div class="server-icon active" data-type="friends">
+                <i class="fas fa-user-friends"></i>
+            </div>
+            <div class="server-separator"></div>
+            <div class="servers-list" id="servers-list">
+                <!-- Sunucular buraya eklenecek -->
+            </div>
+            
+            <!-- TEK BUTONLAR -->
+            <div class="server-icon add-server" id="add-server-btn">
+                <i class="fas fa-plus"></i>
+            </div>
+            <!-- INVITE BUTONU KALDIRILDI -->
+        </div>
+
+        <!-- Friends/Server Sidebar -->
+        <div class="friends-sidebar">
+            <!-- Friends View -->
+            <div class="friends-view active" id="friends-view">
+                <div class="friends-header">
+                    <input type="text" placeholder="Arkadaş ara" id="friends-search">
+                    <div class="friends-tabs">
+                        <div class="tab active" data-tab="online">Çevrimiçi</div>
+                        <div class="tab" data-tab="all">Tümü</div>
+                        <div class="tab" data-tab="pending">Bekleyen</div>
+                    </div>
+                </div>
+                <div class="friends-list" id="friends-list">
+                    <!-- Arkadaşlar buraya eklenecek -->
+                </div>
+                <div class="friends-actions">
+                    <!-- TEK ARKADAŞ EKLE BUTONU -->
+                    <button class="friend-action-btn" id="add-friend-btn">
+                        <i class="fas fa-user-plus"></i>
+                        Arkadaş Ekle
+                    </button>
+                    <!-- DM BUTONU KALDIRILDI -->
+                </div>
+                
+                <!-- USER PROFILE -->
+                <div class="user-profile">
+                    <div class="profile-info">
+                        <div class="avatar" id="user-avatar">
+                            <div class="status-indicator" id="user-status"></div>
+                        </div>
+                        <div class="user-details">
+                            <span class="username" id="profile-username">Kullanıcı</span>
+                            <span class="user-id" id="profile-userid">#1234</span>
+                        </div>
+                    </div>
+                    <div class="profile-actions">
+                        <i class="fas fa-microphone" id="mic-btn"></i>
+                        <i class="fas fa-headphones" id="headphone-btn"></i>
+                        <i class="fas fa-cog" id="user-settings-btn"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Server View -->
+            <div class="server-view hidden" id="server-view">
+                <div class="server-header">
+                    <h3 id="current-server-name">Sunucu Adı</h3>
+                    <i class="fas fa-chevron-down" id="server-settings-btn"></i>
+                </div>
+                <div class="channels-list" id="channels-list">
+                    <!-- Kanallar buraya eklenecek -->
+                </div>
+                
+                <!-- USER PROFILE -->
+                <div class="user-profile">
+                    <div class="profile-info">
+                        <div class="avatar" id="user-avatar-server">
+                            <div class="status-indicator" id="user-status-server"></div>
+                        </div>
+                        <div class="user-details">
+                            <span class="username" id="profile-username-server">Kullanıcı</span>
+                            <span class="user-id" id="profile-userid-server">#1234</span>
+                        </div>
+                    </div>
+                    <div class="profile-actions">
+                        <i class="fas fa-microphone" id="mic-btn-server"></i>
+                        <i class="fas fa-headphones" id="headphone-btn-server"></i>
+                        <i class="fas fa-cog" id="user-settings-btn-server"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Friends Main -->
+            <div class="friends-main active" id="friends-main">
+                <div class="friends-welcome">
+                    <div class="welcome-icon">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <h2>Arkadaşların</h2>
+                    <p>Burada arkadaşlarınla özel mesajlaşabilirsin</p>
+                    <!-- WELCOME BUTONU KALDIRILDI -->
+                </div>
+            </div>
+
+            <!-- DM Chat -->
+            <div class="dm-chat hidden" id="dm-chat">
+                <div class="chat-header">
+                    <div class="dm-info">
+                        <div class="dm-avatar"></div>
+                        <span id="dm-friend-name">Arkadaş</span>
+                        <span class="dm-status">Çevrimiçi</span>
+                    </div>
+                    <div class="chat-actions">
+                        <i class="fas fa-phone"></i>
+                        <i class="fas fa-video"></i>
+                        <i class="fas fa-info-circle"></i>
+                        <div class="search-box">
+                            <input type="text" placeholder="Ara">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="messages-container" id="dm-messages-container">
+                    <!-- DM Mesajları -->
+                </div>
+                <div class="message-input-container">
+                    <div class="message-input">
+                        <i class="fas fa-plus"></i>
+                        <input type="text" placeholder="@Arkadaş ile mesajlaş" id="dm-message-input">
+                        <div class="input-actions">
+                            <i class="fas fa-gift"></i>
+                            <i class="fas fa-grin"></i>
+                            <i class="fas fa-at"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Server Chat -->
+            <div class="server-chat hidden" id="server-chat">
+                <div class="chat-header">
+                    <div class="channel-info">
+                        <i class="fas fa-hashtag"></i>
+                        <span id="current-channel-name">genel</span>
+                    </div>
+                    <div class="channel-actions">
+                        <i class="fas fa-bell"></i>
+                        <i class="fas fa-pin"></i>
+                        <i class="fas fa-users"></i>
+                        <div class="search-box">
+                            <input type="text" placeholder="Ara">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <i class="fas fa-inbox"></i>
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                </div>
+                <div class="messages-container" id="server-messages-container">
+                    <!-- Sunucu Mesajları -->
+                </div>
+                <div class="message-input-container">
+                    <div class="message-input">
+                        <i class="fas fa-plus"></i>
+                        <input type="text" placeholder="#genel kanalında mesaj yazın" id="server-message-input">
+                        <div class="input-actions">
+                            <i class="fas fa-gift"></i>
+                            <i class="fas fa-grin"></i>
+                            <i class="fas fa-at"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Members Sidebar -->
+        <div class="members-sidebar hidden" id="members-sidebar">
+            <div class="members-header">
+                <h4>ÇEVRİMİÇİ - <span id="online-count">0</span></h4>
+            </div>
+            <div class="members-list" id="members-list">
+                <!-- Üyeler buraya eklenecek -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Create Server Modal -->
+    <div id="create-server-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Sunucu Oluştur</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Sunucu Adı</label>
+                    <input type="text" id="server-name-input" placeholder="Harika Sunucum">
+                </div>
+                <div class="form-group">
+                    <label>Sunucu Açıklaması (İsteğe bağlı)</label>
+                    <textarea id="server-desc-input" placeholder="Sunucunun amacını açıkla"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary">İptal</button>
+                <button class="btn-primary" id="create-server-confirm">Oluştur</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Friend Modal -->
+<div id="add-friend-modal" class="modal hidden">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Arkadaş Ekle</h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Kullanıcı Adı ve Tag</label>
+                <input type="text" id="friend-username-input" placeholder="KullanıcıAdı#0000" autocomplete="off">
+                <small>Kullanıcıyı kullanıcı adı ve tag'i ile eklemelisin (örnek: Ahmet#1234)</small>
+                <small style="color: #5865F2; margin-top: 5px; display: block;">
+                    💡 İpucu: Kullanıcı tag'ini öğrenmek için o kullanıcıya sorun.
+                </small>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary">İptal</button>
+            <button class="btn-primary" id="send-friend-request">İstek Gönder</button>
+        </div>
+    </div>
+</div>
+
+    <!-- User Settings Modal -->
+    <div id="user-settings-modal" class="modal hidden">
+        <div class="modal-content settings-modal">
+            <div class="settings-sidebar">
+                <div class="settings-category">KULLANICI AYARLARI</div>
+                <div class="settings-item active" data-tab="account">Hesabım</div>
+                <div class="settings-item" data-tab="profile">Profil</div>
+                <div class="settings-item" data-tab="privacy">Gizlilik</div>
+            </div>
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h3>Hesap Ayarları</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="settings-tab active" id="account-tab">
+                    <div class="settings-section">
+                        <h4>KULLANICI ADI</h4>
+                        <div class="input-with-button">
+                            <input type="text" id="settings-username" value="Kullanıcı">
+                            <button class="btn-secondary">Düzenle</button>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <h4>E-POSTA</h4>
+                        <div class="input-with-button">
+                            <input type="email" id="settings-email" value="user@example.com">
+                            <button class="btn-secondary">Düzenle</button>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <h4>ŞİFRE</h4>
+                        <button class="btn-secondary">Şifreyi Değiştir</button>
+                    </div>
+                </div>
+                <div class="settings-tab hidden" id="profile-tab">
+                    <div class="settings-section">
+                        <h4>PROFİL FOTOĞRAFI</h4>
+                        <div class="avatar-upload">
+                            <div class="avatar-preview"></div>
+                            <button class="btn-secondary">Yükle</button>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <h4>HAKKIMDA</h4>
+                        <textarea id="profile-bio" placeholder="Kendinden bahset..."></textarea>
+                    </div>
+                </div>
+                <div class="settings-tab hidden" id="privacy-tab">
+                    <div class="settings-section">
+                        <h4>DURUM GÖRÜNÜRLÜĞÜ</h4>
+                        <select id="status-visibility">
+                            <option value="everyone">Herkes</option>
+                            <option value="friends">Sadece Arkadaşlar</option>
+                            <option value="none">Kimse</option>
+                        </select>
+                    </div>
+                    <div class="settings-section">
+                        <h4>ÖZEL MESAJ İZİNLERİ</h4>
+                        <select id="dm-permission">
+                            <option value="everyone">Herkes</option>
+                            <option value="friends">Sadece Arkadaşlar</option>
+                            <option value="none">Kimse</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sunucu Settings Modal -->
+    <div id="server-settings-modal" class="modal hidden">
+        <div class="modal-content settings-modal">
+            <div class="settings-sidebar">
+                <div class="settings-category">SUNUCU AYARLARI</div>
+                <div class="settings-item active" data-tab="overview">Genel Bakış</div>
+                <div class="settings-item" data-tab="roles">Roller</div>
+                <div class="settings-item" data-tab="channels">Kanallar</div>
+                <div class="settings-item" data-tab="members">Üyeler</div>
+            </div>
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h3 id="server-settings-title">Sunucu Ayarları</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="settings-tab active" id="server-overview-tab">
+                    <div class="settings-section">
+                        <h4>SUNUCU ADI</h4>
+                        <div class="input-with-button">
+                            <input type="text" id="server-name-setting" placeholder="Sunucu Adı">
+                            <button class="btn-secondary" id="save-server-name">Kaydet</button>
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <h4>SUNUCU AÇIKLAMASI</h4>
+                        <textarea id="server-description-setting" placeholder="Sunucunun amacını açıkla..."></textarea>
+                    </div>
+                    <div class="settings-section">
+                        <h4>BÖLGE</h4>
+                        <select id="server-region">
+                            <option value="tr">Türkiye</option>
+                            <option value="eu">Avrupa</option>
+                            <option value="us">Amerika</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="settings-tab hidden" id="server-roles-tab">
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h4>ROLLER</h4>
+                            <button class="btn-primary" id="create-role-btn">Rol Oluştur</button>
+                        </div>
+                        <div class="roles-list" id="server-roles-list">
+                            <!-- Roller buraya eklenecek -->
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-tab hidden" id="server-channels-tab">
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h4>KANALLAR</h4>
+                            <button class="btn-primary" id="create-channel-btn">Kanal Oluştur</button>
+                        </div>
+                        <div class="channels-management" id="server-channels-management">
+                            <!-- Kanallar yönetimi buraya eklenecek -->
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-tab hidden" id="server-members-tab">
+                    <div class="settings-section">
+                        <h4>ÜYELER</h4>
+                        <div class="members-management" id="server-members-management">
+                            <!-- Üye yönetimi buraya eklenecek -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rol Oluşturma Modalı -->
+    <div id="create-role-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Rol Oluştur</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Rol Adı</label>
+                    <input type="text" id="role-name-input" placeholder="Yönetici">
+                </div>
+                <div class="form-group">
+                    <label>Rol Rengi</label>
+                    <div class="color-picker">
+                        <input type="color" id="role-color-input" value="#5865F2">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>İzinler</label>
+                    <div class="permissions-list">
+                        <label class="permission-item">
+                            <input type="checkbox" name="permissions" value="manage_channels">
+                            <span>Kanalları Yönet</span>
+                        </label>
+                        <label class="permission-item">
+                            <input type="checkbox" name="permissions" value="manage_roles">
+                            <span>Rolleri Yönet</span>
+                        </label>
+                        <label class="permission-item">
+                            <input type="checkbox" name="permissions" value="kick_members">
+                            <span>Üyeleri At</span>
+                        </label>
+                        <label class="permission-item">
+                            <input type="checkbox" name="permissions" value="ban_members">
+                            <span>Üyeleri Yasakla</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary">İptal</button>
+                <button class="btn-primary" id="create-role-confirm">Oluştur</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- SCRIPT SIRALAMASI -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/voice.js"></script>
+    <script src="js/friends.js"></script>
+    <script src="js/servers.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/server-settings.js"></script>
+    <script src="js/invites.js"></script>
+    <script src="js/dm-chat.js"></script>
+</body>
+</html>
